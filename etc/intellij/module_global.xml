@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_global" default="compile.module.global">
+  <dirname property="module.global.basedir" file="${ant.file.module_global}"/>
+  
+  <property name="module.jdk.home.global" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.global" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.global" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.global" value="${compiler.args}"/>
+  
+  <property name="global.output.dir" value="${module.global.basedir}/../../framework/build/classes/main/production/global"/>
+  <property name="global.testoutput.dir" value="${module.global.basedir}/../../framework/build/classes/main/test/global"/>
+  
+  <path id="global.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="global.module.production.classpath">
+    <path refid="${module.jdk.classpath.global}"/>
+  </path>
+  
+  <path id="global.runtime.production.module.classpath">
+    <pathelement location="${global.output.dir}"/>
+  </path>
+  
+  <path id="global.module.classpath">
+    <path refid="${module.jdk.classpath.global}"/>
+    <pathelement location="${global.output.dir}"/>
+  </path>
+  
+  <path id="global.runtime.module.classpath">
+    <pathelement location="${global.testoutput.dir}"/>
+    <pathelement location="${global.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.global">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.global">
+    <patternset refid="excluded.from.module.global"/>
+  </patternset>
+  
+  
+  <target name="compile.module.global" depends="compile.module.global.production,compile.module.global.tests" description="Compile module global"/>
+  
+  <target name="compile.module.global.production" depends="register.custom.compilers" description="Compile module global; production classes"/>
+  
+  <target name="compile.module.global.tests" depends="register.custom.compilers,compile.module.global.production" description="compile module global; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.global" description="cleanup module">
+    <delete dir="${global.output.dir}"/>
+    <delete dir="${global.testoutput.dir}"/>
+  </target>
+</project>

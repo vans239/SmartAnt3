@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_book" default="compile.module.book">
+  <dirname property="module.book.basedir" file="${ant.file.module_book}"/>
+  
+  <property name="module.jdk.home.book" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.book" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.book" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.book" value="${compiler.args}"/>
+  
+  <property name="book.output.dir" value="${module.book.basedir}/../../framework/build/classes/main/production/book"/>
+  <property name="book.testoutput.dir" value="${module.book.basedir}/../../framework/build/classes/main/test/book"/>
+  
+  <path id="book.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="book.module.production.classpath">
+    <path refid="${module.jdk.classpath.book}"/>
+  </path>
+  
+  <path id="book.runtime.production.module.classpath">
+    <pathelement location="${book.output.dir}"/>
+  </path>
+  
+  <path id="book.module.classpath">
+    <path refid="${module.jdk.classpath.book}"/>
+    <pathelement location="${book.output.dir}"/>
+  </path>
+  
+  <path id="book.runtime.module.classpath">
+    <pathelement location="${book.testoutput.dir}"/>
+    <pathelement location="${book.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.book">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.book">
+    <patternset refid="excluded.from.module.book"/>
+  </patternset>
+  
+  
+  <target name="compile.module.book" depends="compile.module.book.production,compile.module.book.tests" description="Compile module book"/>
+  
+  <target name="compile.module.book.production" depends="register.custom.compilers" description="Compile module book; production classes"/>
+  
+  <target name="compile.module.book.tests" depends="register.custom.compilers,compile.module.book.production" description="compile module book; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.book" description="cleanup module">
+    <delete dir="${book.output.dir}"/>
+    <delete dir="${book.testoutput.dir}"/>
+  </target>
+</project>

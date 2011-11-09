@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_framework" default="compile.module.framework">
+  <dirname property="module.framework.basedir" file="${ant.file.module_framework}"/>
+  
+  <property name="module.jdk.home.framework" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.framework" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.framework" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.framework" value="${compiler.args}"/>
+  
+  <property name="framework.output.dir" value="${module.framework.basedir}/../../framework/build/classes/main"/>
+  <property name="framework.testoutput.dir" value="${module.framework.basedir}/../../framework/build/classes/test"/>
+  
+  <path id="framework.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="framework.module.production.classpath">
+    <path refid="${module.jdk.classpath.framework}"/>
+    <path refid="library.uncommons-maths-1.2.2.classpath"/>
+    <pathelement location="${basedir}/../../framework/lib/runtime/google-collect-1.0.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+  </path>
+  
+  <path id="framework.runtime.production.module.classpath">
+    <pathelement location="${framework.output.dir}"/>
+    <path refid="library.uncommons-maths-1.2.2.classpath"/>
+    <pathelement location="${basedir}/../../framework/lib/runtime/google-collect-1.0.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+  </path>
+  
+  <path id="framework.module.classpath">
+    <path refid="${module.jdk.classpath.framework}"/>
+    <pathelement location="${framework.output.dir}"/>
+    <path refid="library.uncommons-maths-1.2.2.classpath"/>
+    <pathelement location="${basedir}/../../framework/lib/runtime/google-collect-1.0.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+  </path>
+  
+  <path id="framework.runtime.module.classpath">
+    <pathelement location="${framework.testoutput.dir}"/>
+    <pathelement location="${framework.output.dir}"/>
+    <path refid="library.uncommons-maths-1.2.2.classpath"/>
+    <pathelement location="${basedir}/../../framework/lib/runtime/google-collect-1.0.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.framework">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.framework">
+    <patternset refid="excluded.from.module.framework"/>
+  </patternset>
+  
+  <path id="framework.module.sourcepath">
+    <dirset dir="${module.framework.basedir}/../../framework">
+      <include name="src/java/main"/>
+    </dirset>
+  </path>
+  
+  <path id="framework.module.test.sourcepath">
+    <dirset dir="${module.framework.basedir}/../../framework">
+      <include name="src/java/test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.framework" depends="compile.module.framework.production,compile.module.framework.tests" description="Compile module framework"/>
+  
+  <target name="compile.module.framework.production" depends="register.custom.compilers" description="Compile module framework; production classes">
+    <mkdir dir="${framework.output.dir}"/>
+    <javac2 destdir="${framework.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.framework}/javac">
+      <compilerarg line="${compiler.args.framework}"/>
+      <bootclasspath refid="framework.module.bootclasspath"/>
+      <classpath refid="framework.module.production.classpath"/>
+      <src refid="framework.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.framework"/>
+    </javac2>
+    
+    <copy todir="${framework.output.dir}">
+      <fileset dir="${module.framework.basedir}/../../framework/src/java/main">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.framework.tests" depends="register.custom.compilers,compile.module.framework.production" description="compile module framework; test classes" unless="skip.tests">
+    <mkdir dir="${framework.testoutput.dir}"/>
+    <javac2 destdir="${framework.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.framework}/javac">
+      <compilerarg line="${compiler.args.framework}"/>
+      <bootclasspath refid="framework.module.bootclasspath"/>
+      <classpath refid="framework.module.classpath"/>
+      <src refid="framework.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.framework"/>
+    </javac2>
+    
+    <copy todir="${framework.testoutput.dir}">
+      <fileset dir="${module.framework.basedir}/../../framework/src/java/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.framework" description="cleanup module">
+    <delete dir="${framework.output.dir}"/>
+    <delete dir="${framework.testoutput.dir}"/>
+  </target>
+</project>

@@ -1,0 +1,11 @@
+
+module mypol 1.0;
+
+require {
+	type chrome_sandbox_t;
+	type usr_t;
+	class file execute;
+}
+
+#============= chrome_sandbox_t ==============
+allow chrome_sandbox_t usr_t:file execute;

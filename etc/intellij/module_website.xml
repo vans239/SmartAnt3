@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_website" default="compile.module.website">
+  <dirname property="module.website.basedir" file="${ant.file.module_website}"/>
+  
+  <property name="module.jdk.home.website" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.website" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.website" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.website" value="${compiler.args}"/>
+  
+  <property name="website.output.dir" value="${module.website.basedir}/../../framework/build/classes/main/production/website"/>
+  <property name="website.testoutput.dir" value="${module.website.basedir}/../../framework/build/classes/main/test/website"/>
+  
+  <path id="website.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="website.module.production.classpath">
+    <path refid="${module.jdk.classpath.website}"/>
+  </path>
+  
+  <path id="website.runtime.production.module.classpath">
+    <pathelement location="${website.output.dir}"/>
+  </path>
+  
+  <path id="website.module.classpath">
+    <path refid="${module.jdk.classpath.website}"/>
+    <pathelement location="${website.output.dir}"/>
+  </path>
+  
+  <path id="website.runtime.module.classpath">
+    <pathelement location="${website.testoutput.dir}"/>
+    <pathelement location="${website.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.website">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.website">
+    <patternset refid="excluded.from.module.website"/>
+  </patternset>
+  
+  
+  <target name="compile.module.website" depends="compile.module.website.production,compile.module.website.tests" description="Compile module website"/>
+  
+  <target name="compile.module.website.production" depends="register.custom.compilers" description="Compile module website; production classes"/>
+  
+  <target name="compile.module.website.tests" depends="register.custom.compilers,compile.module.website.production" description="compile module website; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.website" description="cleanup module">
+    <delete dir="${website.output.dir}"/>
+    <delete dir="${website.testoutput.dir}"/>
+  </target>
+</project>

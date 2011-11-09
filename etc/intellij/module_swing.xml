@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_swing" default="compile.module.swing">
+  <dirname property="module.swing.basedir" file="${ant.file.module_swing}"/>
+  
+  <property name="module.jdk.home.swing" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.swing" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.swing" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.swing" value="${compiler.args}"/>
+  
+  <property name="swing.output.dir" value="${module.swing.basedir}/../../swing/build/classes/main"/>
+  <property name="swing.testoutput.dir" value="${module.swing.basedir}/../../swing/build/classes/test"/>
+  
+  <path id="swing.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="swing.module.production.classpath">
+    <path refid="${module.jdk.classpath.swing}"/>
+    <pathelement location="${framework.output.dir}"/>
+    <path refid="library.uncommons-maths-1.2.2.classpath"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jfreechart-1.0.13.jar"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jcommon-1.0.16.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+    <path refid="library.fest-swing-1.1.classpath"/>
+  </path>
+  
+  <path id="swing.runtime.production.module.classpath">
+    <pathelement location="${swing.output.dir}"/>
+    <path refid="framework.runtime.production.module.classpath"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jfreechart-1.0.13.jar"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jcommon-1.0.16.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+    <path refid="library.fest-swing-1.1.classpath"/>
+  </path>
+  
+  <path id="swing.module.classpath">
+    <path refid="${module.jdk.classpath.swing}"/>
+    <pathelement location="${swing.output.dir}"/>
+    <pathelement location="${framework.testoutput.dir}"/>
+    <pathelement location="${framework.output.dir}"/>
+    <path refid="library.uncommons-maths-1.2.2.classpath"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jfreechart-1.0.13.jar"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jcommon-1.0.16.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+    <path refid="library.fest-swing-1.1.classpath"/>
+  </path>
+  
+  <path id="swing.runtime.module.classpath">
+    <pathelement location="${swing.testoutput.dir}"/>
+    <pathelement location="${swing.output.dir}"/>
+    <path refid="framework.runtime.module.classpath"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jfreechart-1.0.13.jar"/>
+    <pathelement location="${basedir}/../../swing/lib/runtime/jcommon-1.0.16.jar"/>
+    <path refid="library.testng-5.13-jdk15.classpath"/>
+    <path refid="library.fest-swing-1.1.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.swing">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.swing">
+    <patternset refid="excluded.from.module.swing"/>
+  </patternset>
+  
+  <path id="swing.module.sourcepath">
+    <dirset dir="${module.swing.basedir}/../../swing">
+      <include name="src/java/main"/>
+    </dirset>
+  </path>
+  
+  <path id="swing.module.test.sourcepath">
+    <dirset dir="${module.swing.basedir}/../../swing">
+      <include name="src/java/test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.swing" depends="compile.module.swing.production,compile.module.swing.tests" description="Compile module swing"/>
+  
+  <target name="compile.module.swing.production" depends="register.custom.compilers,compile.module.framework" description="Compile module swing; production classes">
+    <mkdir dir="${swing.output.dir}"/>
+    <javac2 destdir="${swing.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.swing}/javac">
+      <compilerarg line="${compiler.args.swing}"/>
+      <bootclasspath refid="swing.module.bootclasspath"/>
+      <classpath refid="swing.module.production.classpath"/>
+      <src refid="swing.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.swing"/>
+    </javac2>
+    
+    <copy todir="${swing.output.dir}">
+      <fileset dir="${module.swing.basedir}/../../swing/src/java/main">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.swing.tests" depends="register.custom.compilers,compile.module.swing.production" description="compile module swing; test classes" unless="skip.tests">
+    <mkdir dir="${swing.testoutput.dir}"/>
+    <javac2 destdir="${swing.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.swing}/javac">
+      <compilerarg line="${compiler.args.swing}"/>
+      <bootclasspath refid="swing.module.bootclasspath"/>
+      <classpath refid="swing.module.classpath"/>
+      <src refid="swing.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.swing"/>
+    </javac2>
+    
+    <copy todir="${swing.testoutput.dir}">
+      <fileset dir="${module.swing.basedir}/../../swing/src/java/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.swing" description="cleanup module">
+    <delete dir="${swing.output.dir}"/>
+    <delete dir="${swing.testoutput.dir}"/>
+  </target>
+</project>
