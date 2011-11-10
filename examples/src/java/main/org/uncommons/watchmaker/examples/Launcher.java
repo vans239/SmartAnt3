@@ -24,7 +24,7 @@ import org.uncommons.watchmaker.examples.biomorphs.BiomorphApplet;
 import org.uncommons.watchmaker.examples.bits.BitsExample;
 import org.uncommons.watchmaker.examples.geneticprogramming.GeneticProgrammingExample;
 import org.uncommons.watchmaker.examples.monalisa.MonaLisaApplet;
-import org.uncommons.watchmaker.examples.smartant.AntApplet;
+import org.uncommons.watchmaker.examples.smartant3.AntApplet;
 import org.uncommons.watchmaker.examples.strings.StringsExample;
 import org.uncommons.watchmaker.examples.sudoku.SudokuApplet;
 import org.uncommons.watchmaker.examples.travellingsalesman.TravellingSalesmanApplet;
@@ -45,7 +45,7 @@ public class Launcher
         EXAMPLES.put("salesman", TravellingSalesmanApplet.class);
         EXAMPLES.put("strings", StringsExample.class);
         EXAMPLES.put("sudoku", SudokuApplet.class);
-        EXAMPLES.put("smartant", AntApplet.class);
+        EXAMPLES.put("smartant3", AntApplet.class);
     }
 
 
@@ -54,7 +54,7 @@ public class Launcher
         // Prevents instantiation of launcher class.
     }
 
-    
+
     /**
      * Launch the specified example application from the command-line.
      * @param args First item is the name of the example to run.  Any subsequent arguments are passed
