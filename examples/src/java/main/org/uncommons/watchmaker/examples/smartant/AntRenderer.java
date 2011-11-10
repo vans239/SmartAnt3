@@ -22,14 +22,16 @@ import java.awt.*;
  * @author Alexander Buslaev
  */
 class AntRenderer extends JPanel {
-    private boolean[][] field;
+    private final boolean field[][];
     private final int fieldSize = 32;
 
     private AntMover mover;
 
     public AntRenderer(MooreAutomaton m) {
         setPreferredSize(new Dimension(400, 400));
+        AntMover.generateRandomField(0.086);
         mover = new AntMover(m);
+        field = mover.getCurrentField();
         setLayout(null);
     }
 
@@ -38,7 +40,6 @@ class AntRenderer extends JPanel {
     }
 
     public void reset() {
-        field = AntMover.getField();
         setLayout(null);
         mover.reset();
         repaint();
@@ -56,11 +57,11 @@ class AntRenderer extends JPanel {
         for (int i = 0; i < fieldSize + 1; i++) {
             g.drawLine(i * (getWidth() - 1) / fieldSize, 0, i * (getWidth() - 1) / fieldSize, getHeight());
         }
-        boolean[][] food;
+        final boolean food[][];
         if (mover != null) {
             food = mover.getCurrentField();
         } else {
-            food = AntMover.getField();
+            food = mover.getStartField();
         }
 
         Color temp = g.getColor();
@@ -68,7 +69,8 @@ class AntRenderer extends JPanel {
         for (int i = 0; i < fieldSize; i++) {
             for (int j = 0; j < fieldSize; j++) {
                 if (food[i][j]) {
-                    g.fillRect(j * getWidth() / fieldSize, i * getHeight() / fieldSize, (getWidth() + fieldSize - 1) / fieldSize, (getHeight() + fieldSize - 1) / fieldSize);
+                    g.fillRect(j * getWidth() / fieldSize, i * getHeight() / fieldSize,
+                               (getWidth() + fieldSize - 1) / fieldSize, (getHeight() + fieldSize - 1) / fieldSize);
                 }
             }
         }
@@ -86,16 +88,20 @@ class AntRenderer extends JPanel {
 
         switch (dir) {
             case LEFT:
-                paintLeft(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize, getHeight() / fieldSize);
+                paintLeft(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize,
+                          getHeight() / fieldSize);
                 break;
             case RIGHT:
-                paintRight(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize, getHeight() / fieldSize);
+                paintRight(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize,
+                           getHeight() / fieldSize);
                 break;
             case TOP:
-                paintTop(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize, getHeight() / fieldSize);
+                paintTop(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize,
+                         getHeight() / fieldSize);
                 break;
             case BOTTOM:
-                paintBottom(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize, getHeight() / fieldSize);
+                paintBottom(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize,
+                            getWidth() / fieldSize, getHeight() / fieldSize);
                 break;
         }
     }

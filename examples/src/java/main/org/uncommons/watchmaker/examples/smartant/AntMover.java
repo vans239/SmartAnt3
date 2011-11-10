@@ -15,50 +15,17 @@
 //=============================================================================
 package org.uncommons.watchmaker.examples.smartant;
 
+import java.util.Random;
+
 /**
  * Moving algorithm for ant
  *
  * @author Alexander Buslaev
  */
 public class AntMover {
-
+    private static final int SIZE = 32;
     private static final int STEPS = 200;
-    public static String[] stringmap = {
-
-            "_**********_____________________",
-            "__________*_____________________",
-            "__________*_____________________",
-            "__________*_____________________",
-            "__________*____*________________",
-            "****______*______________*******",
-            "___*______*_____________*_______",
-            "___*______*___*_________*_______",
-            "___*______*_*___________*_______",
-            "___*______*_____________*_______",
-            "___********_____________*_______",
-            "___________*_______*****________",
-            "______________*___*_____________",
-            "__________________*_____________",
-            "_______________*__*_____________",
-            "____________*_____*_____________",
-            "__________________*_____________",
-            "___________*______*_____________",
-            "________*_______________________",
-            "________________________________",
-            "__________________*_____________",
-            "_______*__________*_____________",
-            "_____*____________*_____________",
-            "__________________*_____________",
-            "____*_____________*_____________",
-            "____*_____________*_____________",
-            "____*___________________________",
-            "____*__****_******______________",
-            "________________________________",
-            "________________________________",
-            "________________________________",
-            "________________________________"
-
-    };
+    private static boolean initField[][];
 
     private MooreAutomaton automaton;
     private boolean[][] field;
@@ -68,8 +35,6 @@ public class AntMover {
     private int done;
     private int eaten;
     private int stepped;
-
-    public static final char[] ACTION_VALUES = {'L', 'R', 'M'};
 
     public enum Direction {
         LEFT,
@@ -120,13 +85,13 @@ public class AntMover {
         public Cell next(Direction d) {
             switch (d) {
                 case LEFT:
-                    return new Cell(x, (y + 31) % 32);
+                    return new Cell(x, (y + SIZE - 1) % SIZE);
                 case RIGHT:
-                    return new Cell(x, (y + 1) % 32);
+                    return new Cell(x, (y + 1) % SIZE);
                 case TOP:
-                    return new Cell((x + 31) % 32, y);
+                    return new Cell((x + SIZE - 1) % SIZE, y);
                 case BOTTOM:
-                    return new Cell((x + 1) % 32, y);
+                    return new Cell((x + 1) % SIZE, y);
             }
             return null;
         }
@@ -134,27 +99,17 @@ public class AntMover {
     }
 
 
-    public AntMover(MooreAutomaton a) {
-        automaton = a;
-        field = getField();
+    public AntMover(MooreAutomaton automaton) {
+        this.automaton = automaton;
         state = automaton.getStart();
         currentCell = new Cell(0, 0);
         direction = Direction.RIGHT;
-        state = automaton.getStart();
         eaten = 0;
         stepped = 0;
+        this.field = copyInitField();
+
     }
 
-    public static boolean[][] getField() {
-        boolean[][] field = new boolean[32][32];
-        for (int i = 0; i < 32; i++) {
-            String s = stringmap[i];
-            for (int j = 0; j < 32; j++) {
-                field[i][j] = s.charAt(j) == '*';
-            }
-        }
-        return field;
-    }
 
     public boolean[][] getCurrentField() {
         return field;
@@ -164,17 +119,17 @@ public class AntMover {
         return state;
     }
 
-    public void DoStep(int i) {
+    public void doStep(int i) {
         Cell foodCell = new Cell(currentCell.x, currentCell.y).next(direction);
         if (field[foodCell.x][foodCell.y]) {
             state = automaton.getNode(state).getTransitionTrue();
             char action = automaton.getNode(state).getAction();
-            //          System.out.println(direction);
             switch (action) {
                 case ('M'):
                     currentCell = currentCell.next(direction);
-                    if (field[currentCell.x][currentCell.y]) eaten++;
-                    //       System.out.println(eaten);
+                    if (field[currentCell.x][currentCell.y]) {
+                        eaten++;
+                    }
                     done = i;
                     field[currentCell.x][currentCell.y] = false;
                     break;
@@ -203,9 +158,9 @@ public class AntMover {
     }
 
 
-    public double MoveAnt() {
+    public double moveAnt() {
         for (int i = 0; i < STEPS; ++i) {
-            DoStep(i);
+            doStep(i);
         }
         return (eaten + ((double) STEPS - (double) done) / (double) STEPS);
 
@@ -220,12 +175,39 @@ public class AntMover {
     }
 
     public void move() {
-        DoStep(stepped++);
+        doStep(stepped++);
     }
 
     public void reset() {
         currentCell.x = 0;
         currentCell.y = 0;
         direction = Direction.RIGHT;
+        this.field = copyInitField();
+    }
+
+
+    public static void generateRandomField(double mu) {
+        Random random = new Random(13546);
+        initField = new boolean[SIZE][SIZE];
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                if (random.nextDouble() < mu) {
+                    initField[i][j] = true;
+                }
+            }
+        }
+    }
+
+    public static boolean[][] getStartField() {
+        return initField;
+    }
+    private boolean[][] copyInitField(){
+        boolean field[][] = new boolean[SIZE][SIZE];
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                field[i][j] = initField[i][j];
+            }
+        }
+        return field;
     }
 }

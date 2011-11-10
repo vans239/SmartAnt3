@@ -18,7 +18,6 @@ package org.uncommons.watchmaker.examples.smartant;
 import org.uncommons.swing.SpringUtilities;
 import org.uncommons.swing.SwingBackgroundTask;
 import org.uncommons.watchmaker.examples.AbstractExampleApplet;
-import org.uncommons.watchmaker.examples.smartant.automaton.DocumentPanel;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
 import org.uncommons.watchmaker.framework.termination.Stagnation;
 import org.uncommons.watchmaker.framework.termination.TargetFitness;
@@ -105,8 +104,9 @@ public class AntApplet extends AbstractExampleApplet {
         gameButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
                 restartButton.setEnabled(true);
-                for (int i = 0; i < 200; ++i)
+                for (int i = 0; i < 200; ++i) {
                     renderer.move();
+                }
             }
         });
         restartButton = new JButton("Restart visualizator");
@@ -175,23 +175,9 @@ public class AntApplet extends AbstractExampleApplet {
         MooreAutomatonMutation operators = new MooreAutomatonMutation();
         //     operators.add(new MooreAutomatonCrossover(numberOfCrossoverNodes, probabilityCrossover));
         //    EvolutionaryOperator<MooreAutomaton> pipeline = new EvolutionPipeline<MooreAutomaton>(operators);
-        EvolutionEngine<MooreAutomaton> engine = new AntESEngine
-                (factory,
-                        operators,
-                        new MooreAutomatonEvaluator(),
-                        true,
-                        new Integer(muLambdaSpinner.getValue().toString()).intValue(),
-                        step1,
-                        step2,
-                        new Double(fitterSpinner.getValue().toString()).doubleValue(),
-                        new Integer(numberOfCrossoverPointsSpinner.getValue().toString()).intValue(),
-                        new Random());
+        EvolutionEngine<MooreAutomaton> engine = new AntESEngine(factory, operators, new MooreAutomatonEvaluator(), true, new Integer(muLambdaSpinner.getValue().toString()).intValue(), step1, step2, new Double(fitterSpinner.getValue().toString()).doubleValue(), new Integer(numberOfCrossoverPointsSpinner.getValue().toString()).intValue(), new Random());
         engine.addEvolutionObserver(monitor);
-        return engine.evolve(new Integer(populationSizeSpinner.getValue().toString()).intValue(),
-                0,
-                new TargetFitness(new Double(targetFitnessSpinner.getValue().toString()).doubleValue(), true),
-                abort.getTerminationCondition(),
-                new Stagnation(25, true));
+        return engine.evolve(new Integer(populationSizeSpinner.getValue().toString()).intValue(), 0, new TargetFitness(new Double(targetFitnessSpinner.getValue().toString()).doubleValue(), true), abort.getTerminationCondition(), new Stagnation(25, true));
     }
 
     private SwingBackgroundTask<MooreAutomaton> createTask() {
@@ -219,7 +205,9 @@ public class AntApplet extends AbstractExampleApplet {
                     initButton.setEnabled(false);
                     abort.reset();
                     createTask().execute();
-                } else abort.getControl().setEnabled(false);
+                } else {
+                    abort.getControl().setEnabled(false);
+                }
 
             }
         };

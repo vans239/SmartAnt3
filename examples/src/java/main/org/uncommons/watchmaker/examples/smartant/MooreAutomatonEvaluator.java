@@ -26,7 +26,7 @@ public class MooreAutomatonEvaluator implements FitnessEvaluator<MooreAutomaton>
 
     public double getFitness(MooreAutomaton candidate, List<? extends MooreAutomaton> population) {
         AntMover f = new AntMover(candidate);
-        double a = f.MoveAnt();
+        double a = f.moveAnt();
         return a;
     }
 

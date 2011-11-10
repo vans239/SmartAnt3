@@ -21,7 +21,7 @@ package org.uncommons.watchmaker.examples.smartant;
  * @author Alexander Buslaev
  */
 public class MooreNode {
-    public static final char[] ACTION_VALUES = {'R', 'M', 'L'};
+    public static final char[] ACTION_VALUES = {'R', 'M', 'L'};  // ant's actions: right, middle, left
 
     private int[] transitions = new int[2];
     private char action;
