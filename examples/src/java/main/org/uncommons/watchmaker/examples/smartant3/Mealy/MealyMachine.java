@@ -1,4 +1,4 @@
-package org.uncommons.watchmaker.examples.smartant3.Mealy;
+package org.uncommons.watchmaker.examples.smartant3.mealy;
 /*
  *  Date: 10.11.11
  *  Time: 09:15
@@ -7,7 +7,9 @@ package org.uncommons.watchmaker.examples.smartant3.Mealy;
  *     vans239@gmail.com
  */
 
-public class MealyMachine {
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyNode;
+
+public class MealyMachine{
     public static final int COUNTOFIMPACTS = 256;
     private int startState;
     private MealyNode states[];

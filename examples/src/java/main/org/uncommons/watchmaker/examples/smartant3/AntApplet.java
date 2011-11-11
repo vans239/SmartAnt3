@@ -18,7 +18,7 @@ package org.uncommons.watchmaker.examples.smartant3;
 import org.uncommons.swing.SpringUtilities;
 import org.uncommons.swing.SwingBackgroundTask;
 import org.uncommons.watchmaker.examples.AbstractExampleApplet;
-import org.uncommons.watchmaker.examples.smartant3.Moore.*;
+import org.uncommons.watchmaker.examples.smartant3.mealy.*;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
 import org.uncommons.watchmaker.framework.termination.Stagnation;
 import org.uncommons.watchmaker.framework.termination.TargetFitness;
@@ -40,14 +40,14 @@ public class AntApplet extends AbstractExampleApplet {
     private JButton initButton;
     private JButton restartButton;
     private AntRenderer renderer;
-    private MooreAutomaton automaton;
-    private static JSpinner populationSizeSpinner;
-    private static JSpinner stateSpinner;
-    private static JSpinner targetFitnessSpinner;
+    private MealyMachine machine;
+    //    private static JSpinner populationSizeSpinner;
+//    private static JSpinner stateSpinner;
+//    private static JSpinner targetFitnessSpinner;
     private static AbortControl abort;
-    private static JSpinner numberOfCrossoverPointsSpinner;
-    private static JSpinner fitterSpinner;
-    private static JSpinner muLambdaSpinner;
+    //    private static JSpinner numberOfCrossoverPointsSpinner;
+//    private static JSpinner fitterSpinner;
+//    private static JSpinner muLambdaSpinner;
     private static AntEvolutionMonitor monitor;
     private int steps;
     JTabbedPane tabs;
@@ -57,9 +57,9 @@ public class AntApplet extends AbstractExampleApplet {
     private static int step2 = 1;
 
 
-    public AntApplet(MooreAutomaton a) {
-        automaton = a;
-        renderer = new AntRenderer(a);
+    public AntApplet(MealyMachine machine) {
+        this.machine = machine;
+        renderer = new AntRenderer(machine);
     }
 
     protected void prepareGUI(Container container) {
@@ -111,7 +111,7 @@ public class AntApplet extends AbstractExampleApplet {
         restartButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
                 restartButton.setEnabled(false);
-                renderer.setAutomaton(automaton);
+                renderer.setMachine(machine);
                 gameButton.setEnabled(true);
                 stepButton.setEnabled(true);
                 initButton.setEnabled(true);
@@ -136,61 +136,48 @@ public class AntApplet extends AbstractExampleApplet {
         JPanel controls = new JPanel(new BorderLayout());
         JPanel innerPanel = new JPanel(new SpringLayout());
 
-        innerPanel.add(new JLabel("Number of fitter candidates: "));
-        fitterSpinner = new JSpinner(new SpinnerNumberModel(0.2, 0, 1, 0.1));
-        innerPanel.add(fitterSpinner);
-
-        innerPanel.add(new JLabel("Maximum number of mutation points: "));
-        numberOfCrossoverPointsSpinner = new JSpinner(new SpinnerNumberModel(10, 1, 100, 1));
-        innerPanel.add(numberOfCrossoverPointsSpinner);
-
-        innerPanel.add(new JLabel("Mu Lambda: "));
-        muLambdaSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 500, 1));
-        innerPanel.add(muLambdaSpinner);
-
-        innerPanel.add(new JLabel("Population Size: "));
-        populationSizeSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 50000, 1));
-        innerPanel.add(populationSizeSpinner);
-        innerPanel.add(new JLabel("Number of states: "));
-        stateSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 150, 1));
-        innerPanel.add(stateSpinner);
-        innerPanel.add(new JLabel("Target fitness: "));
-        targetFitnessSpinner = new JSpinner(new SpinnerNumberModel(89.0, 50.0, 89.2, 0.1));
-        innerPanel.add(targetFitnessSpinner);
-        SpringUtilities.makeCompactGrid(innerPanel, 6, 2, 0, 6, 6, 6);
+        innerPanel.add(new JLabel("Number of fitter candidates: " + Properties.numberOfFilterCandidates));
+        innerPanel.add(new JLabel("Maximum number of mutation points: " + Properties.countOfMutationPoints));
+        innerPanel.add(new JLabel("Mu Lambda: " + Properties.muLambda));
+        innerPanel.add(new JLabel("Population Size: " + Properties.populationSize));
+        innerPanel.add(new JLabel("Number of states: " + Properties.countOFStates));
+        innerPanel.add(new JLabel("Target fitness: " + Properties.targetFitness));
+        SpringUtilities.makeCompactGrid(innerPanel, 6, 1, 0, 6, 6, 6);
         innerPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
         controls.add(innerPanel, BorderLayout.CENTER);
         return controls;
     }
 
-    public static MooreAutomaton evolve() {
-        MooreAutomatonFactory factory = new MooreAutomatonFactory(new Integer(stateSpinner.getValue().toString()).intValue());
-        //    java.util.List<EvolutionaryOperator<MooreAutomaton>> operators = new ArrayList<EvolutionaryOperator<MooreAutomaton>>(1);
-        MooreAutomatonMutation operators = new MooreAutomatonMutation();
-        //     operators.add(new MooreAutomatonCrossover(numberOfCrossoverNodes, probabilityCrossover));
-        //    EvolutionaryOperator<MooreAutomaton> pipeline = new EvolutionPipeline<MooreAutomaton>(operators);
-        EvolutionEngine<MooreAutomaton> engine = new AntESEngine(factory, operators, new MooreAutomatonEvaluator(), true, new Integer(muLambdaSpinner.getValue().toString()).intValue(), step1, step2, new Double(fitterSpinner.getValue().toString()).doubleValue(), new Integer(numberOfCrossoverPointsSpinner.getValue().toString()).intValue(), new Random());
+    public static MealyMachine evolve() {
+        MealyMachineFactory factory = new MealyMachineFactory(Properties.countOFStates);
+        MealyMachineMutation operators = new MealyMachineMutation();
+        EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, new MealyMachineEvaluator(), true,
+                                                               Properties.muLambda, step1, step2,
+                                                               Properties.numberOfFilterCandidates,
+                                                               Properties.countOfMutationPoints, new Random());
         engine.addEvolutionObserver(monitor);
-        return engine.evolve(new Integer(populationSizeSpinner.getValue().toString()).intValue(), 0, new TargetFitness(new Double(targetFitnessSpinner.getValue().toString()).doubleValue(), true), abort.getTerminationCondition(), new Stagnation(25, true));
+        return engine.evolve(Properties.populationSize, 0, new TargetFitness(Properties.targetFitness, true),
+                             abort.getTerminationCondition(), new Stagnation(25, true));
     }
 
-    private SwingBackgroundTask<MooreAutomaton> createTask() {
-        return new SwingBackgroundTask<MooreAutomaton>() {
+    private SwingBackgroundTask<MealyMachine> createTask() {
+        return new SwingBackgroundTask<MealyMachine>() {
             @Override
-            protected MooreAutomaton performTask() {
-                MooreAutomaton automaton = evolve();
-                return automaton;
+            protected MealyMachine performTask() {
+                MealyMachine machine = evolve();
+                return machine;
             }
 
-            protected void postProcessing(MooreAutomaton automato) {
-                automaton = automato;
-                renderer.setAutomaton(automaton);
+            protected void postProcessing(MealyMachine machine) {
+                AntApplet.this.machine = machine;
+                renderer.setMachine(machine);
                 gameButton.setEnabled(true);
                 stepButton.setEnabled(true);
                 initButton.setEnabled(true);
 
                 renderer.reset();
-                if (new MooreAutomatonEvaluator().getFitness(automato, null) < new Double(targetFitnessSpinner.getValue().toString()).doubleValue() && (abort.getControl().isEnabled())) {
+                if (new MealyMachineEvaluator().getFitness(machine,
+                                                           null) < Properties.targetFitness && (abort.getControl().isEnabled())) {
                     restartButton.setEnabled(false);
                     initButton.setEnabled(false);
                     abort.reset();
@@ -204,9 +191,10 @@ public class AntApplet extends AbstractExampleApplet {
     }
 
     public static void main(String args[]) {
-        MooreAutomaton automaton = new MooreAutomaton(1, 0);
-        automaton.addNode(0, new MooreNode(0, 0, 'M'));
-        new AntApplet(automaton).displayInFrame("Smart Ant");
+        //todo
+        MealyMachineFactory mmf = new MealyMachineFactory(Properties.countOFStates);
+        MealyMachine machine = mmf.generateRandomCandidate(new Random());
+        new AntApplet(machine).displayInFrame("Smart Ant 3");
     }
 
 }

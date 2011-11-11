@@ -8,9 +8,9 @@ package org.uncommons.watchmaker.examples.smartAnt3;
  */
 
 import org.testng.annotations.Test;
-import org.uncommons.watchmaker.examples.smartant3.Mealy.MealyMachine;
-import org.uncommons.watchmaker.examples.smartant3.Mealy.MealyMachineFactory;
-import org.uncommons.watchmaker.examples.smartant3.Mealy.MealyMachineMutation;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachine;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachineFactory;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachineMutation;
 
 import java.util.List;
 import java.util.ArrayList;

@@ -15,7 +15,7 @@
 //=============================================================================
 package org.uncommons.watchmaker.examples.smartant3;
 
-import org.uncommons.watchmaker.examples.smartant3.Moore.MooreAutomaton;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachine;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,13 +25,13 @@ import java.awt.*;
  */
 class AntRenderer extends JPanel {
     private final boolean field[][];
-    private final int fieldSize = 32;
+    private static final int SIZE = Properties.SIZE;
 
     private AntMover mover;
 
-    public AntRenderer(MooreAutomaton m) {
+    public AntRenderer(MealyMachine m) {
         setPreferredSize(new Dimension(400, 400));
-        AntMover.generateRandomField(0.11);
+        AntMover.generateRandomField(Properties.mu);
         mover = new AntMover(m);
         field = mover.getCurrentField();
         setLayout(null);
@@ -47,17 +47,17 @@ class AntRenderer extends JPanel {
         repaint();
     }
 
-    public void setAutomaton(MooreAutomaton a) {
+    public void setMachine(MealyMachine a) {
         mover = new AntMover(a);
     }
 
     public void paint(Graphics g) {
         g.clearRect(0, 0, getWidth(), getHeight());
-        for (int i = 0; i < fieldSize + 1; i++) {
-            g.drawLine(0, i * (getHeight() - 1) / fieldSize, getWidth(), i * (getHeight() - 1) / fieldSize);
+        for (int i = 0; i < SIZE + 1; i++) {
+            g.drawLine(0, i * (getHeight() - 1) / SIZE, getWidth(), i * (getHeight() - 1) / SIZE);
         }
-        for (int i = 0; i < fieldSize + 1; i++) {
-            g.drawLine(i * (getWidth() - 1) / fieldSize, 0, i * (getWidth() - 1) / fieldSize, getHeight());
+        for (int i = 0; i < SIZE + 1; i++) {
+            g.drawLine(i * (getWidth() - 1) / SIZE, 0, i * (getWidth() - 1) / SIZE, getHeight());
         }
         final boolean food[][];
         if (mover != null) {
@@ -68,11 +68,11 @@ class AntRenderer extends JPanel {
 
         Color temp = g.getColor();
         g.setColor(Color.BLACK);
-        for (int i = 0; i < fieldSize; i++) {
-            for (int j = 0; j < fieldSize; j++) {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
                 if (food[i][j]) {
-                    g.fillRect(j * getWidth() / fieldSize, i * getHeight() / fieldSize,
-                               (getWidth() + fieldSize - 1) / fieldSize, (getHeight() + fieldSize - 1) / fieldSize);
+                    g.fillRect(j * getWidth() / SIZE, i * getHeight() / SIZE,
+                               (getWidth() + SIZE - 1) / SIZE, (getHeight() + SIZE - 1) / SIZE);
                 }
             }
         }
@@ -90,20 +90,20 @@ class AntRenderer extends JPanel {
 
         switch (dir) {
             case LEFT:
-                paintLeft(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize,
-                          getHeight() / fieldSize);
+                paintLeft(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE, getWidth() / SIZE,
+                          getHeight() / SIZE);
                 break;
             case RIGHT:
-                paintRight(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize,
-                           getHeight() / fieldSize);
+                paintRight(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE, getWidth() / SIZE,
+                           getHeight() / SIZE);
                 break;
             case TOP:
-                paintTop(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize, getWidth() / fieldSize,
-                         getHeight() / fieldSize);
+                paintTop(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE, getWidth() / SIZE,
+                         getHeight() / SIZE);
                 break;
             case BOTTOM:
-                paintBottom(g, cell.y * getWidth() / fieldSize, cell.x * getHeight() / fieldSize,
-                            getWidth() / fieldSize, getHeight() / fieldSize);
+                paintBottom(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE,
+                            getWidth() / SIZE, getHeight() / SIZE);
                 break;
         }
     }

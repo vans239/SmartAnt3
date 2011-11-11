@@ -15,8 +15,8 @@
 //=============================================================================
 package org.uncommons.watchmaker.examples.smartant3;
 
-import org.uncommons.watchmaker.examples.smartant3.Moore.MooreAutomaton;
-import org.uncommons.watchmaker.examples.smartant3.Moore.MooreAutomatonMutation;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachine;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachineMutation;
 import org.uncommons.watchmaker.framework.*;
 
 import java.util.ArrayList;
@@ -27,9 +27,9 @@ import java.util.Random;
 /**
  * @author Alexander Buslaev
  */
-public class AntESEngine extends EvolutionStrategyEngine<MooreAutomaton> {
-    private MooreAutomatonMutation evolutionScheme;
-    private FitnessEvaluator<? super MooreAutomaton> fitnessEvaluator;
+public class AntESEngine extends EvolutionStrategyEngine<MealyMachine> {
+    private MealyMachineMutation evolutionScheme;
+    private FitnessEvaluator<? super MealyMachine> fitnessEvaluator;
     private final boolean plusSelection;
     private final int evolutionStepTheory;
     private final int evolutionStepPractice;
@@ -59,16 +59,10 @@ public class AntESEngine extends EvolutionStrategyEngine<MooreAutomaton> {
      * @param rng                    The source of randomness used by all stochastic processes (including
      *                               evolutionary operators and selection strategies).
      */
-    public AntESEngine(CandidateFactory<MooreAutomaton> candidateFactory,
-                       MooreAutomatonMutation evolutionScheme,
-                       FitnessEvaluator<? super MooreAutomaton> fitnessEvaluator,
-                       boolean plusSelection,
-                       int offspringMultiplierVAR,
-                       int evolutionStepTheory,
-                       int evolutionStepPractice,
-                       double fitterCandidates,
-                       int numberOfMutationPoints,
-                       Random rng) {
+    public AntESEngine(CandidateFactory<MealyMachine> candidateFactory, MealyMachineMutation evolutionScheme,
+                       FitnessEvaluator<? super MealyMachine> fitnessEvaluator, boolean plusSelection,
+                       int offspringMultiplierVAR, int evolutionStepTheory, int evolutionStepPractice,
+                       double fitterCandidates, int numberOfMutationPoints, Random rng) {
         super(candidateFactory, null, fitnessEvaluator, plusSelection, offspringMultiplier, rng);
         this.evolutionScheme = evolutionScheme;
         this.fitnessEvaluator = fitnessEvaluator;
@@ -91,9 +85,8 @@ public class AntESEngine extends EvolutionStrategyEngine<MooreAutomaton> {
      * @return The updated population after the evolution strategy has advanced.
      */
     @Override
-    protected List<EvaluatedCandidate<MooreAutomaton>> nextEvolutionStep(List<EvaluatedCandidate<MooreAutomaton>> evaluatedPopulation,
-                                                                         int eliteCount,
-                                                                         Random rng) {
+    protected List<EvaluatedCandidate<MealyMachine>> nextEvolutionStep(
+            List<EvaluatedCandidate<MealyMachine>> evaluatedPopulation, int eliteCount, Random rng) {
         // Elite count is ignored.  If it's non-zero it doesn't really matter, but if assertions are
         // enabled we will flag it as wrong.
         assert eliteCount == 0 : "Explicit elitism is not supported for an ES, eliteCount should be 0.";
@@ -101,7 +94,7 @@ public class AntESEngine extends EvolutionStrategyEngine<MooreAutomaton> {
         // Select candidates that will be operated on to create the offspring.
         int offspringCount = offspringMultiplier * evaluatedPopulation.size();
 
-        List<MooreAutomaton> parents = new ArrayList<MooreAutomaton>(offspringCount);
+        List<MealyMachine> parents = new ArrayList<MealyMachine>(offspringCount);
         for (int i = 0; i < offspringCount; i++) {
             parents.add(evaluatedPopulation.get(rng.nextInt(evaluatedPopulation.size())).getCandidate());
         }
@@ -109,9 +102,9 @@ public class AntESEngine extends EvolutionStrategyEngine<MooreAutomaton> {
 //       evolutionScheme.getClass().cast(MooreAutomatonMutation);
         // Then evolve the parents.
 
-        List<MooreAutomaton> offspring = evolutionScheme.apply(parents, rng);
+        List<MealyMachine> offspring = evolutionScheme.apply(parents, rng);
 
-        List<EvaluatedCandidate<MooreAutomaton>> evaluatedOffspring = evaluatePopulation(offspring);
+        List<EvaluatedCandidate<MealyMachine>> evaluatedOffspring = evaluatePopulation(offspring);
         boolean flag = false;
         for (int i = 100; i > 0; --i) {
 
@@ -146,37 +139,43 @@ public class AntESEngine extends EvolutionStrategyEngine<MooreAutomaton> {
         }
         EvolutionUtils.sortEvaluatedPopulation(evaluatedOffspring, fitnessEvaluator.isNatural());
 
-        if (evolutionStepTheory > 0)
-            deleteEqualsEvaluatedPopulation(evaluatedOffspring, evaluatedPopulation.size(), evolutionStepTheory, evolutionStepPractice);
+        if (evolutionStepTheory > 0) {
+            deleteEqualsEvaluatedPopulation(evaluatedOffspring, evaluatedPopulation.size(), evolutionStepTheory,
+                                            evolutionStepPractice);
+        }
         // Retain the fittest of the candidates that are eligible for survival.
         return evaluatedOffspring.subList(0, evaluatedPopulation.size());
     }
 
 
     private static <T> void deleteEqualsEvaluatedPopulation(List<EvaluatedCandidate<T>> evaluatedPopulation,
-                                                            int minNumber,
-                                                            int stepTheory,
-                                                            int stepPractice) {
+                                                            int minNumber, int stepTheory, int stepPractice) {
         Collections.sort(evaluatedPopulation);
         int i = 1;
         while (i < evaluatedPopulation.size() && evaluatedPopulation.size() > minNumber) {
             if (evaluatedPopulation.get(i).getFitness() == evaluatedPopulation.get(i - 1).getFitness()) {
                 evaluatedPopulation.remove(i);
             }
-            if (i < evaluatedPopulation.size() - minNumber) i += stepPractice;
-            else i += stepTheory;
+            if (i < evaluatedPopulation.size() - minNumber) {
+                i += stepPractice;
+            } else {
+                i += stepTheory;
+            }
         }
         Collections.sort(evaluatedPopulation, Collections.reverseOrder());
     }
 
-    private static <T> double getFitterCandidatesRate(List<EvaluatedCandidate<T>> evaluatedOffsping, List<EvaluatedCandidate<T>> evaluatedPopulation) {
+    private static <T> double getFitterCandidatesRate(List<EvaluatedCandidate<T>> evaluatedOffsping,
+                                                      List<EvaluatedCandidate<T>> evaluatedPopulation) {
         double result = 0;
-        for (int i = 0; i < evaluatedPopulation.size(); ++i)
+        for (int i = 0; i < evaluatedPopulation.size(); ++i) {
             for (int j = 0; j < offspringMultiplier; ++j) {
-                if (evaluatedOffsping.get(i * offspringMultiplier + j).getFitness() > evaluatedPopulation.get(i).getFitness()) {
+                if (evaluatedOffsping.get(i * offspringMultiplier + j).getFitness() > evaluatedPopulation.get(
+                        i).getFitness()) {
                     result++;
                 }
             }
+        }
         result = result / evaluatedOffsping.size();
         return result;
     }

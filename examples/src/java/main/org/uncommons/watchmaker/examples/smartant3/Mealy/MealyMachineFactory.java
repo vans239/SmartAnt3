@@ -1,4 +1,4 @@
-package org.uncommons.watchmaker.examples.smartant3.Mealy;
+package org.uncommons.watchmaker.examples.smartant3.mealy;
 /*
  *  Date: 10.11.11
  *  Time: 10:12

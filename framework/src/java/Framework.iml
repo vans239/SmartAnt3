@@ -11,6 +11,15 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../lib/runtime/google-collect-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../lib/runtime/uncommons-maths-1.2.2.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -18,16 +27,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="testng" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/runtime/google-collect-1.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>
 

@@ -1,4 +1,4 @@
-package org.uncommons.watchmaker.examples.smartant3.Mealy;
+package org.uncommons.watchmaker.examples.smartant3.mealy;
 /*
  *  Date: 10.11.11
  *  Time: 09:15
@@ -27,6 +27,16 @@ public class MealyNode {
                 return Action.MIDDLE;
             }
             return Action.RIGHT;
+        }
+
+        public String toString() {
+            if (this == RIGHT) {
+                return "right";
+            }
+            if (this == LEFT) {
+                return "LEFT";
+            }
+            return "MIDDLE";
         }
     }
 

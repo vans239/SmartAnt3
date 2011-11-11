@@ -15,7 +15,10 @@
 //=============================================================================
 package org.uncommons.watchmaker.examples.smartant3;
 
-import org.uncommons.watchmaker.examples.smartant3.Moore.MooreAutomaton;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyImpact;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachine;
+import org.uncommons.watchmaker.examples.smartant3.mealy.MealyNode.Action;
+import org.uncommons.watchmaker.examples.smartant3.Properties;
 
 import java.util.Random;
 
@@ -25,11 +28,12 @@ import java.util.Random;
  * @author Alexander Buslaev
  */
 public class AntMover {
-    private static final int SIZE = 32;
-    private static final int STEPS = 200;
+    private static final int SIZE = Properties.SIZE;
+    private static final int STEPS = Properties.STEPS;
+
     private static boolean initField[][];
 
-    private MooreAutomaton automaton;
+    private MealyMachine machine;
     private boolean[][] field;
     private Cell currentCell;
     private Direction direction;
@@ -101,9 +105,9 @@ public class AntMover {
     }
 
 
-    public AntMover(MooreAutomaton automaton) {
-        this.automaton = automaton;
-        state = automaton.getStart();
+    public AntMover(MealyMachine machine) {
+        this.machine = machine;
+        state = machine.getStart();
         currentCell = new Cell(0, 0);
         direction = Direction.RIGHT;
         eaten = 0;
@@ -122,41 +126,28 @@ public class AntMover {
     }
 
     public void doStep(int i) {
-        Cell foodCell = new Cell(currentCell.x, currentCell.y).next(direction);
-        if (field[foodCell.x][foodCell.y]) {
-            state = automaton.getNode(state).getTransitionTrue();
-            char action = automaton.getNode(state).getAction();
-            switch (action) {
-                case ('M'):
-                    currentCell = currentCell.next(direction);
-                    if (field[currentCell.x][currentCell.y]) {
-                        eaten++;
-                    }
-                    done = i;
-                    field[currentCell.x][currentCell.y] = false;
-                    break;
-                case ('L'):
-                    direction = direction.left();
-                    break;
-                case ('R'):
-                    direction = direction.right();
-                    break;
-            }
-        } else {
-            state = automaton.getNode(state).getTransitionFalse();
-            char action = automaton.getNode(state).getAction();
-            switch (action) {
-                case ('M'):
-                    currentCell = currentCell.next(direction);
-                    break;
-                case ('L'):
-                    direction = direction.left();
-                    break;
-                case ('R'):
-                    direction = direction.right();
-                    break;
-            }
+        int impact = MealyImpact.impact(this);
+        Action action = machine.getNode(state).getAction(impact);
+        int transition = machine.getNode(state).getNextNode(impact);
+
+        switch (action) {
+            case MIDDLE:
+                currentCell = currentCell.next(direction);
+                break;
+            case LEFT:
+                direction = direction.left();
+                break;
+            case RIGHT:
+                direction = direction.right();
+                break;
         }
+        if(field[currentCell.x][currentCell.y]){
+            field[currentCell.x][currentCell.y] = false;
+            ++eaten;
+            done = i;
+        }
+        state = transition;
+        //System.out.println("impact:" + impact + "Action: " + action);
     }
 
 
@@ -164,6 +155,7 @@ public class AntMover {
         for (int i = 0; i < STEPS; ++i) {
             doStep(i);
         }
+
         return (eaten + ((double) STEPS - (double) done) / (double) STEPS);
 
     }
@@ -189,7 +181,8 @@ public class AntMover {
 
 
     public static void generateRandomField(double mu) {
-        Random random = new Random(13546);
+        // todo
+        Random random = new Random();
         initField = new boolean[SIZE][SIZE];
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
@@ -203,7 +196,8 @@ public class AntMover {
     public static boolean[][] getStartField() {
         return initField;
     }
-    private boolean[][] copyInitField(){
+
+    private boolean[][] copyInitField() {
         boolean field[][] = new boolean[SIZE][SIZE];
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
