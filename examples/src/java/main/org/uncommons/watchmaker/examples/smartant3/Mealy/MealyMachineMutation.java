@@ -57,44 +57,27 @@ public class MealyMachineMutation implements EvolutionaryOperator<MealyMachine> 
      * @return A mutated version of the machine.
      */
     private MealyMachine mutateMachine(MealyMachine machine, Random rng) {
-        boolean mutatedStartState = false;
-        boolean mutatedTransitions[][] = new boolean[machine.getSize()][COUNTOFIMPACTS];
-        boolean mutatedActions[][] = new boolean[machine.getSize()][COUNTOFIMPACTS];
-
-        machine = new MealyMachine(machine);
+        machine = new MealyMachine(machine);  // copying!!
         int mutated = 0;
+        //realy mutated points can be less then mutationPoints
         while (mutated < mutationPoints) {
             // p(mutation start state) = 0.1%
             double random = rng.nextDouble();
-            if(random < 0.001 && mutatedStartState == false){
-                mutatedStartState = true;
+            if(random < 0.001){
                 machine.setStart(rng.nextInt(machine.getSize()));
-                ++mutated;
             }
             if(random < 0.5){
-                ++mutated;
                 int i = rng.nextInt(machine.getSize());
                 int j = rng.nextInt(COUNTOFIMPACTS);
-
-                while(mutatedTransitions[i][j] == true){
-                    i = rng.nextInt(machine.getSize());
-                    j = rng.nextInt(COUNTOFIMPACTS);
-                }
-                mutatedTransitions[i][j] = true;
                 machine.getNode(i).setNextNode(j, rng.nextInt(machine.getSize()));
             }
             if(random > 0.5){
-                ++mutated;
                 int i = rng.nextInt(machine.getSize());
                 int j = rng.nextInt(COUNTOFIMPACTS);
-
-                while(mutatedActions[i][j] == true){
-                    i = rng.nextInt(machine.getSize());
-                    j = rng.nextInt(COUNTOFIMPACTS);
-                }
-                mutatedTransitions[i][j] = true;
                 machine.getNode(i).setAction(j, MealyNode.Action.getRandomAction(rng));
             }
+            ++mutated;
+
         }
         return machine;
     }
@@ -102,6 +85,5 @@ public class MealyMachineMutation implements EvolutionaryOperator<MealyMachine> 
     public void setMutationPoints(int i) {
         mutationPoints = i;
     }
-
 }
 

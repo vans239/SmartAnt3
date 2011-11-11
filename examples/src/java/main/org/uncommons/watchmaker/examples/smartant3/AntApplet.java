@@ -141,7 +141,6 @@ public class AntApplet extends AbstractExampleApplet {
         innerPanel.add(new JLabel("STEPS: " + Properties.STEPS));
 
 
-
         SpringUtilities.makeCompactGrid(innerPanel, 10, 1, 0, 10, 10, 10);
         innerPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
         controls.add(innerPanel, BorderLayout.CENTER);
@@ -149,15 +148,16 @@ public class AntApplet extends AbstractExampleApplet {
     }
 
     public static MealyMachine evolve() {
+        Random random = new Random();
         MealyMachineFactory factory = new MealyMachineFactory(Properties.countOfStates);
         MealyMachineMutation operators = new MealyMachineMutation();
-        EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, new MealyMachineEvaluator(), true,
-                                                               Properties.muLambda, step1, step2,
-                                                               Properties.numberOfFilterCandidates,
-                                                               Properties.countOfMutationPoints, new Random());
+        MealyMachineEvaluator mme = new MealyMachineEvaluator(Properties.countOFfields, random);
+        EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, mme, true, Properties.muLambda,
+                                                               step1, step2, Properties.numberOfFilterCandidates,
+                                                               Properties.countOfMutationPoints, random);
         engine.addEvolutionObserver(monitor);
         return engine.evolve(Properties.populationSize, 0, new TargetFitness(Properties.targetFitness, true),
-                             abort.getTerminationCondition(), new Stagnation(25, true));
+                             abort.getTerminationCondition(), new Stagnation(1000, true));
     }
 
     private SwingBackgroundTask<MealyMachine> createTask() {
@@ -176,8 +176,8 @@ public class AntApplet extends AbstractExampleApplet {
                 initButton.setEnabled(true);
 
                 renderer.reset();
-                if (new MealyMachineEvaluator().getFitness(machine,
-                                                           null) < Properties.targetFitness && (abort.getControl().isEnabled())) {
+                if (new MealyMachineEvaluator(Properties.countOFfields, new Random()).getFitness(machine,
+                                                           null) < Properties.targetFitness && abort.getControl().isEnabled()) {
                     restartButton.setEnabled(false);
                     initButton.setEnabled(false);
                     abort.reset();

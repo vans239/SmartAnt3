@@ -50,6 +50,7 @@ public class MealyNode {
     }
 
     public void setNextNode(int impact, int nextNode) {
+        assert (nextNode < transitions.length) : "Error!!!";
         transitions[impact] = nextNode;
     }
 

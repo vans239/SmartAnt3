@@ -31,8 +31,9 @@ class AntRenderer extends JPanel {
 
     public AntRenderer(MealyMachine m) {
         setPreferredSize(new Dimension(400, 400));
-        AntMover.generateRandomField(Properties.mu);
-        mover = new AntMover(m);
+
+        //todo
+        mover = new AntMover(m, new boolean[32][32]);
         field = mover.getCurrentField();
         setLayout(null);
     }
@@ -48,7 +49,8 @@ class AntRenderer extends JPanel {
     }
 
     public void setMachine(MealyMachine a) {
-        mover = new AntMover(a);
+        //todo
+        mover = new AntMover(a, new boolean[32][32]);
     }
 
     public void paint(Graphics g) {
@@ -90,19 +92,19 @@ class AntRenderer extends JPanel {
 
         switch (dir) {
             case LEFT:
-                paintLeft(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE, getWidth() / SIZE,
+                paintLeft(g, cell.x * getWidth() / SIZE, cell.y * getHeight() / SIZE, getWidth() / SIZE,
                           getHeight() / SIZE);
                 break;
             case RIGHT:
-                paintRight(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE, getWidth() / SIZE,
+                paintRight(g, cell.x * getWidth() / SIZE, cell.y * getHeight() / SIZE, getWidth() / SIZE,
                            getHeight() / SIZE);
                 break;
             case TOP:
-                paintTop(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE, getWidth() / SIZE,
+                paintTop(g, cell.x * getWidth() / SIZE, cell.y * getHeight() / SIZE, getWidth() / SIZE,
                          getHeight() / SIZE);
                 break;
             case BOTTOM:
-                paintBottom(g, cell.y * getWidth() / SIZE, cell.x * getHeight() / SIZE,
+                paintBottom(g, cell.x * getWidth() / SIZE, cell.y * getHeight() / SIZE,
                             getWidth() / SIZE, getHeight() / SIZE);
                 break;
         }

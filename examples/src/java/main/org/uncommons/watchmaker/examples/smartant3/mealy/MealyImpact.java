@@ -43,56 +43,56 @@ public class MealyImpact {
     private static boolean[] impactsRight(boolean field[][], Cell cell) {
         boolean impacts[] = new boolean[8];
         int size = field.length;
-        impacts[0] = field[(cell.x - 2 + size) % size][(cell.y + size) % size];
-        impacts[1] = field[(cell.x - 1 + size) % size][(cell.y + size) % size];
-        impacts[2] = field[(cell.x + 1 + size) % size][(cell.y + size) % size];
-        impacts[3] = field[(cell.x + 2 + size) % size][(cell.y + size) % size];
-        impacts[4] = field[(cell.x - 1 + size) % size][(cell.y + 1 + size) % size];
-        impacts[5] = field[(cell.x + size) % size][(cell.y + 1 + size) % size];
-        impacts[6] = field[(cell.x + 1 + size) % size][(cell.y + 1 + size) % size];
-        impacts[7] = field[(cell.x + size) % size][(cell.y + 2 + size) % size];
+        impacts[0] = field[(cell.y - 2 + size) % size][(cell.x + size) % size];
+        impacts[1] = field[(cell.y - 1 + size) % size][(cell.x + size) % size];
+        impacts[2] = field[(cell.y + 1 + size) % size][(cell.x + size) % size];
+        impacts[3] = field[(cell.y + 2 + size) % size][(cell.x + size) % size];
+        impacts[4] = field[(cell.y - 1 + size) % size][(cell.x + 1 + size) % size];
+        impacts[5] = field[(cell.y + size) % size][(cell.x + 1 + size) % size];
+        impacts[6] = field[(cell.y + 1 + size) % size][(cell.x + 1 + size) % size];
+        impacts[7] = field[(cell.y + size) % size][(cell.x + 2 + size) % size];
         return impacts;
     }
 
     private static boolean[] impactsLeft(boolean field[][], Cell cell) {
         boolean impacts[] = new boolean[8];
         int size = field.length;
-        impacts[0] = field[(cell.x + 2 + size) % size][(cell.y + size) % size];
-        impacts[1] = field[(cell.x + 1 + size) % size][(cell.y + size) % size];
-        impacts[2] = field[(cell.x - 1 + size) % size][(cell.y + size) % size];
-        impacts[3] = field[(cell.x - 2 + size) % size][(cell.y + size) % size];
-        impacts[4] = field[(cell.x + 1 + size) % size][(cell.y - 1 + size) % size];
-        impacts[5] = field[(cell.x + size) % size][(cell.y - 1 + size) % size];
-        impacts[6] = field[(cell.x - 1 + size) % size][(cell.y - 1 + size) % size];
-        impacts[7] = field[(cell.x + size) % size][(cell.y - 2 + size) % size];
-        return impacts;
-    }
-
-    private static boolean[] impactsTop(boolean field[][], Cell cell) {
-        boolean impacts[] = new boolean[8];
-        int size = field.length;
-        impacts[0] = field[(cell.x + size) % size][(cell.y + 2 + size) % size];
-        impacts[1] = field[(cell.x + size) % size][(cell.y + 1 + size) % size];
-        impacts[2] = field[(cell.x + size) % size][(cell.y - 1 + size) % size];
-        impacts[3] = field[(cell.x + size) % size][(cell.y - 2 + size) % size];
-        impacts[4] = field[(cell.x + 1 + size) % size][(cell.y + 1 + size) % size];
-        impacts[5] = field[(cell.x + 1 + size) % size][(cell.y + size) % size];
-        impacts[6] = field[(cell.x + 1 + size) % size][(cell.y - 1 + size) % size];
-        impacts[7] = field[(cell.x + 2 + size) % size][(cell.y + size) % size];
+        impacts[0] = field[(cell.y + 2 + size) % size][(cell.x + size) % size];
+        impacts[1] = field[(cell.y + 1 + size) % size][(cell.x + size) % size];
+        impacts[2] = field[(cell.y - 1 + size) % size][(cell.x + size) % size];
+        impacts[3] = field[(cell.y - 2 + size) % size][(cell.x + size) % size];
+        impacts[4] = field[(cell.y + 1 + size) % size][(cell.x - 1 + size) % size];
+        impacts[5] = field[(cell.y + size) % size][(cell.x - 1 + size) % size];
+        impacts[6] = field[(cell.y - 1 + size) % size][(cell.x - 1 + size) % size];
+        impacts[7] = field[(cell.y + size) % size][(cell.x - 2 + size) % size];
         return impacts;
     }
 
     private static boolean[] impactsBottom(boolean field[][], Cell cell) {
         boolean impacts[] = new boolean[8];
         int size = field.length;
-        impacts[0] = field[(cell.x + size) % size][(cell.y - 2 + size) % size];
-        impacts[1] = field[(cell.x + size) % size][(cell.y - 1 + size) % size];
-        impacts[2] = field[(cell.x + size) % size][(cell.y + 1 + size) % size];
-        impacts[3] = field[(cell.x + size) % size][(cell.y + 2 + size) % size];
-        impacts[4] = field[(cell.x - 1 + size) % size][(cell.y - 1 + size) % size];
-        impacts[5] = field[(cell.x - 1 + size) % size][(cell.y + size) % size];
-        impacts[6] = field[(cell.x - 1 + size) % size][(cell.y + 1 + size) % size];
-        impacts[7] = field[(cell.x - 2 + size) % size][(cell.y + size) % size];
+        impacts[0] = field[(cell.y + size) % size][(cell.x + 2 + size) % size];
+        impacts[1] = field[(cell.y + size) % size][(cell.x + 1 + size) % size];
+        impacts[2] = field[(cell.y + size) % size][(cell.x - 1 + size) % size];
+        impacts[3] = field[(cell.y + size) % size][(cell.x - 2 + size) % size];
+        impacts[4] = field[(cell.y + 1 + size) % size][(cell.x + 1 + size) % size];
+        impacts[5] = field[(cell.y + 1 + size) % size][(cell.x + size) % size];
+        impacts[6] = field[(cell.y + 1 + size) % size][(cell.x - 1 + size) % size];
+        impacts[7] = field[(cell.y + 2 + size) % size][(cell.x + size) % size];
+        return impacts;
+    }
+
+    private static boolean[] impactsTop(boolean field[][], Cell cell) {
+        boolean impacts[] = new boolean[8];
+        int size = field.length;
+        impacts[0] = field[(cell.y + size) % size][(cell.x - 2 + size) % size];
+        impacts[1] = field[(cell.y + size) % size][(cell.x - 1 + size) % size];
+        impacts[2] = field[(cell.y + size) % size][(cell.x + 1 + size) % size];
+        impacts[3] = field[(cell.y + size) % size][(cell.x + 2 + size) % size];
+        impacts[4] = field[(cell.y - 1 + size) % size][(cell.x - 1 + size) % size];
+        impacts[5] = field[(cell.y - 1 + size) % size][(cell.x + size) % size];
+        impacts[6] = field[(cell.y - 1 + size) % size][(cell.x + 1 + size) % size];
+        impacts[7] = field[(cell.y - 2 + size) % size][(cell.x + size) % size];
         return impacts;
     }
 }
