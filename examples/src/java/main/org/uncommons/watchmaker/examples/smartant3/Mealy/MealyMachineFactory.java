@@ -7,6 +7,7 @@ package org.uncommons.watchmaker.examples.smartant3.mealy;
  *     vans239@gmail.com
  */
 
+import org.uncommons.watchmaker.examples.smartant3.Properties;
 import org.uncommons.watchmaker.framework.factories.AbstractCandidateFactory;
 
 import java.util.Random;
@@ -19,7 +20,7 @@ import java.util.Random;
  */
 
 public class MealyMachineFactory extends AbstractCandidateFactory<MealyMachine> {
-    public static final int COUNTOFIMPACTS = 256;
+    public static final int COUNTOFIMPACTS = Properties.COUNTOFIMPACTS;
 
     private int numberOfStates;
 

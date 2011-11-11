@@ -7,10 +7,11 @@ package org.uncommons.watchmaker.examples.smartant3.mealy;
  *     vans239@gmail.com
  */
 
+import org.uncommons.watchmaker.examples.smartant3.Properties;
 import org.uncommons.watchmaker.examples.smartant3.mealy.MealyNode;
 
 public class MealyMachine{
-    public static final int COUNTOFIMPACTS = 256;
+    public static final int COUNTOFIMPACTS = Properties.COUNTOFIMPACTS;
     private int startState;
     private MealyNode states[];
 

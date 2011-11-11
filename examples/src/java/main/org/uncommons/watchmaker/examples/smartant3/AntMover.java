@@ -18,8 +18,6 @@ package org.uncommons.watchmaker.examples.smartant3;
 import org.uncommons.watchmaker.examples.smartant3.mealy.MealyImpact;
 import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachine;
 import org.uncommons.watchmaker.examples.smartant3.mealy.MealyNode.Action;
-import org.uncommons.watchmaker.examples.smartant3.Properties;
-
 import java.util.Random;
 
 /**

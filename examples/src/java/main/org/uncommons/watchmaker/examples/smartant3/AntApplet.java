@@ -70,7 +70,6 @@ public class AntApplet extends AbstractExampleApplet {
         tabs.add("Ant visualizer", renderer);
         tabs.add("Monitor", monitor);
         tabs2 = new JTabbedPane();
-        //    tabs.add("Ant visualizer", new AntEvolutionMonitor(false));
         container.add(tabs, BorderLayout.WEST);
         container.add(tabs2, BorderLayout.EAST);
     }
@@ -140,7 +139,7 @@ public class AntApplet extends AbstractExampleApplet {
         innerPanel.add(new JLabel("Maximum number of mutation points: " + Properties.countOfMutationPoints));
         innerPanel.add(new JLabel("Mu Lambda: " + Properties.muLambda));
         innerPanel.add(new JLabel("Population Size: " + Properties.populationSize));
-        innerPanel.add(new JLabel("Number of states: " + Properties.countOFStates));
+        innerPanel.add(new JLabel("Number of states: " + Properties.countOfStates));
         innerPanel.add(new JLabel("Target fitness: " + Properties.targetFitness));
         SpringUtilities.makeCompactGrid(innerPanel, 6, 1, 0, 6, 6, 6);
         innerPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
@@ -149,7 +148,7 @@ public class AntApplet extends AbstractExampleApplet {
     }
 
     public static MealyMachine evolve() {
-        MealyMachineFactory factory = new MealyMachineFactory(Properties.countOFStates);
+        MealyMachineFactory factory = new MealyMachineFactory(Properties.countOfStates);
         MealyMachineMutation operators = new MealyMachineMutation();
         EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, new MealyMachineEvaluator(), true,
                                                                Properties.muLambda, step1, step2,
@@ -192,7 +191,7 @@ public class AntApplet extends AbstractExampleApplet {
 
     public static void main(String args[]) {
         //todo
-        MealyMachineFactory mmf = new MealyMachineFactory(Properties.countOFStates);
+        MealyMachineFactory mmf = new MealyMachineFactory(Properties.countOfStates);
         MealyMachine machine = mmf.generateRandomCandidate(new Random());
         new AntApplet(machine).displayInFrame("Smart Ant 3");
     }
