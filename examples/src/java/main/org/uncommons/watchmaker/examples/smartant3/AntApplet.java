@@ -41,13 +41,7 @@ public class AntApplet extends AbstractExampleApplet {
     private JButton restartButton;
     private AntRenderer renderer;
     private MealyMachine machine;
-    //    private static JSpinner populationSizeSpinner;
-//    private static JSpinner stateSpinner;
-//    private static JSpinner targetFitnessSpinner;
     private static AbortControl abort;
-    //    private static JSpinner numberOfCrossoverPointsSpinner;
-//    private static JSpinner fitterSpinner;
-//    private static JSpinner muLambdaSpinner;
     private static AntEvolutionMonitor monitor;
     private int steps;
     JTabbedPane tabs;
@@ -141,7 +135,14 @@ public class AntApplet extends AbstractExampleApplet {
         innerPanel.add(new JLabel("Population Size: " + Properties.populationSize));
         innerPanel.add(new JLabel("Number of states: " + Properties.countOfStates));
         innerPanel.add(new JLabel("Target fitness: " + Properties.targetFitness));
-        SpringUtilities.makeCompactGrid(innerPanel, 6, 1, 0, 6, 6, 6);
+        innerPanel.add(new JLabel("Count of fields: " + Properties.countOFfields));
+        innerPanel.add(new JLabel("p(food in cell) = " + Properties.mu));
+        innerPanel.add(new JLabel("Size: " + Properties.SIZE));
+        innerPanel.add(new JLabel("STEPS: " + Properties.STEPS));
+
+
+
+        SpringUtilities.makeCompactGrid(innerPanel, 10, 1, 0, 10, 10, 10);
         innerPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
         controls.add(innerPanel, BorderLayout.CENTER);
         return controls;
