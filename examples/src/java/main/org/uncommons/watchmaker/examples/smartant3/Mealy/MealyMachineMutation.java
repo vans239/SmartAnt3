@@ -7,6 +7,7 @@ package org.uncommons.watchmaker.examples.smartant3.mealy;
  *     vans239@gmail.com
  */
 
+import org.uncommons.watchmaker.examples.smartant3.Properties;
 import org.uncommons.watchmaker.framework.EvolutionaryOperator;
 
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import java.util.Random;
  * @author Alexander Buslaev
  */
 public class MealyMachineMutation implements EvolutionaryOperator<MealyMachine> {
-    private static final int COUNTOFIMPACTS = 256;
     private int mutationPoints;
     /*
         mutation start state
@@ -66,14 +66,20 @@ public class MealyMachineMutation implements EvolutionaryOperator<MealyMachine> 
             if(random < 0.001){
                 machine.setStart(rng.nextInt(machine.getSize()));
             }
-            if(random < 0.5){
+            if(random < 0.1){
                 int i = rng.nextInt(machine.getSize());
-                int j = rng.nextInt(COUNTOFIMPACTS);
+                machine.getNode(i).generateRandomPredicts(rng);
+            }
+            if(random > 0.1 && random < 0.6){
+                int i = rng.nextInt(machine.getSize());
+                int countOfImpacts = machine.getNode(i).getCountOfImpacts();
+                int j = rng.nextInt(countOfImpacts);
                 machine.getNode(i).setNextNode(j, rng.nextInt(machine.getSize()));
             }
-            if(random > 0.5){
+            if(random > 0.6){
                 int i = rng.nextInt(machine.getSize());
-                int j = rng.nextInt(COUNTOFIMPACTS);
+                int countOfImpacts = machine.getNode(i).getCountOfImpacts();
+                int j = rng.nextInt(countOfImpacts);
                 machine.getNode(i).setAction(j, ShortcutMealyNode.Action.getRandomAction(rng));
             }
             ++mutated;

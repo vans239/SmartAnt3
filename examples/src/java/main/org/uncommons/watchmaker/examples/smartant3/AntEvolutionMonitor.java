@@ -17,6 +17,7 @@ package org.uncommons.watchmaker.examples.smartant3;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
@@ -30,6 +31,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Daniel Dyer
@@ -188,5 +191,9 @@ class AntEvolutionMonitor extends JPanel implements IslandEvolutionObserver<Obje
 
     public void islandPopulationUpdate(int islandIndex, PopulationData<? extends Object> populationData) {
         // Do nothing.
+    }
+
+    public void save(String path) throws IOException{
+        ChartUtilities.saveChartAsPNG(new File(path), chart, 500, 500 );
     }
 }

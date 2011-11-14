@@ -9,11 +9,10 @@ package org.uncommons.watchmaker.examples.smartant3.mealy;
 
 import org.uncommons.watchmaker.examples.smartant3.Properties;
 
+import java.util.Arrays;
 import java.util.Random;
 
-public class ShortcutMealyNode{
-    public static final int COUNTOFIMPACTS = Properties.COUNTOFIMPACTS;
-
+public class ShortcutMealyNode {
     public static enum Action {
         RIGHT,
         LEFT,
@@ -42,8 +41,26 @@ public class ShortcutMealyNode{
         }
     }
 
-    private int transitions[] = new int[COUNTOFIMPACTS];
-    private Action actions[] = new Action[COUNTOFIMPACTS];
+    public int countOfImpacts = (int) Math.pow( 2,  Properties.countOfUsedPredicts);
+    private int transitions[] = new int[countOfImpacts];
+    private Action actions[] = new Action[countOfImpacts];
+    private boolean predicts[];
+
+    private ShortcutMealyNode() {
+
+    }
+
+    public ShortcutMealyNode(Random random) {
+        generateRandomPredicts(random);
+    }
+
+    public ShortcutMealyNode clone() {
+        ShortcutMealyNode mealyNode = new ShortcutMealyNode();
+        mealyNode.predicts = this.predicts.clone();
+        mealyNode.actions = this.actions.clone();
+        mealyNode.transitions = this.transitions.clone();
+        return mealyNode;
+    }
 
     public void setAction(int impact, Action action) {
         actions[impact] = action;
@@ -55,10 +72,39 @@ public class ShortcutMealyNode{
     }
 
     public int getNextNode(int impact) {
+        impact = getPredictImpact(impact);
         return transitions[impact];
     }
 
     public Action getAction(int impact) {
+        impact = getPredictImpact(impact);
         return actions[impact];
+    }
+
+    public int getCountOfImpacts(){
+     return countOfImpacts;
+    }
+    //todo rewrite this method
+    public void generateRandomPredicts(Random random) {
+        predicts = new boolean[Properties.countOfPredicts];
+        int i = 0;
+        while (i < Properties.countOfUsedPredicts) {
+            int j = random.nextInt(predicts.length);
+            if (!predicts[j]) {
+                predicts[j] = true;
+                ++i;
+            }
+        }
+    }
+    public int getPredictImpact(int impact){
+        int k = 128;
+        int result = 0;
+        for(int i = 0; i < predicts.length; ++i){
+            if(predicts[i] && ((impact & k) != 0)){
+               result = 2 * result + 1;
+            }
+            k /= 2;
+        }
+        return result;
     }
 }

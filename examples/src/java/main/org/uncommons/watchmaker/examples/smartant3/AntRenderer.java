@@ -24,11 +24,11 @@ import java.awt.*;
  * @author Alexander Buslaev
  */
 class AntRenderer extends JPanel {
-    private final boolean field[][];
+    private boolean field[][];
     private static final int SIZE = Properties.SIZE;
 
     private AntMover mover;
-
+    private MealyMachine machine;
     public AntRenderer(MealyMachine m) {
         setPreferredSize(new Dimension(400, 400));
 
@@ -48,9 +48,15 @@ class AntRenderer extends JPanel {
         repaint();
     }
 
-    public void setMachine(MealyMachine a) {
+    public void setMachine(MealyMachine machine) {
         //todo
-        mover = new AntMover(a, new boolean[32][32]);
+        this.machine = machine;
+        mover = new AntMover(machine, field);
+    }
+
+    public void setField(boolean field[][]) {
+        this.field = field;
+        mover = new AntMover(machine, field);
     }
 
     public void paint(Graphics g) {

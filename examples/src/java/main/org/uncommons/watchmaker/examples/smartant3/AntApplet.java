@@ -20,7 +20,7 @@ import org.uncommons.swing.SwingBackgroundTask;
 import org.uncommons.watchmaker.examples.AbstractExampleApplet;
 import org.uncommons.watchmaker.examples.smartant3.mealy.*;
 import org.uncommons.watchmaker.framework.EvolutionEngine;
-import org.uncommons.watchmaker.framework.termination.Stagnation;
+import org.uncommons.watchmaker.framework.termination.ElapsedTime;
 import org.uncommons.watchmaker.framework.termination.TargetFitness;
 import org.uncommons.watchmaker.swing.AbortControl;
 import org.uncommons.watchmaker.framework.*;
@@ -37,9 +37,12 @@ import java.util.Random;
  * @author Alexander Buslaev
  */
 public class AntApplet extends AbstractExampleApplet {
+    private TextField fieldNumber;
+
     private JButton stepButton;
     private JButton gameButton;
     private JButton initButton;
+    private JButton manyInitsButton;
     private JButton restartButton;
     private AntRenderer renderer;
     private MealyMachine machine;
@@ -52,6 +55,7 @@ public class AntApplet extends AbstractExampleApplet {
     private static int step1 = 1;
     private static int step2 = 1;
 
+    private boolean fields[][][];
 
     public AntApplet(MealyMachine machine) {
         this.machine = machine;
@@ -81,9 +85,11 @@ public class AntApplet extends AbstractExampleApplet {
                 stepButton.setEnabled(false);
                 initButton.setEnabled(false);
                 abort.reset();
+
                 createTask().execute();
             }
         });
+
         stepButton = new JButton("Do step");
         stepButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ev) {
@@ -107,6 +113,7 @@ public class AntApplet extends AbstractExampleApplet {
             public void actionPerformed(ActionEvent ev) {
                 restartButton.setEnabled(false);
                 renderer.setMachine(machine);
+                renderer.setField(fields[Integer.parseInt(fieldNumber.getText())]);
                 gameButton.setEnabled(true);
                 stepButton.setEnabled(true);
                 initButton.setEnabled(true);
@@ -141,56 +148,60 @@ public class AntApplet extends AbstractExampleApplet {
         innerPanel.add(new JLabel("p(food in cell) = " + Properties.mu));
         innerPanel.add(new JLabel("Size: " + Properties.SIZE));
         innerPanel.add(new JLabel("STEPS: " + Properties.STEPS));
+        innerPanel.add(new JLabel("Predicts: " + Properties.countOfUsedPredicts));
+        fieldNumber = new TextField("0");
+        innerPanel.add(fieldNumber);
 
-
-        SpringUtilities.makeCompactGrid(innerPanel, 10, 1, 0, 10, 10, 10);
+        SpringUtilities.makeCompactGrid(innerPanel, 12, 1, 0, 12, 12, 12);
         innerPanel.setBorder(BorderFactory.createTitledBorder("Configuration"));
         controls.add(innerPanel, BorderLayout.CENTER);
         return controls;
     }
 
-    public static MealyMachine evolve() {
+    public MealyMachine evolve() {
+        // каждый раз на новых полях
+
         System.out.println("Start: " + new Date());
         Random random = new Random();
         MealyMachineFactory factory = new MealyMachineFactory(Properties.countOfStates);
         MealyMachineMutation operators = new MealyMachineMutation();
         MealyMachineEvaluator mme = new MealyMachineEvaluator(Properties.countOFfields, random);
-        EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, mme, true,
-                                                                                         Properties.muLambda, step1,
-                                                                                         step2,
-                                                                                         Properties.numberOfFilterCandidates,
-                                                                                         Properties.countOfMutationPoints,
-                                                                                         random);
+        fields = mme.getFields();
+        EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, mme, true, Properties.muLambda,
+                                                               step1, step2, Properties.numberOfFilterCandidates,
+                                                               Properties.countOfMutationPoints, random);
         engine.addEvolutionObserver(monitor);
         return engine.evolve(Properties.populationSize, 0, new TargetFitness(Properties.targetFitness, true),
-                             abort.getTerminationCondition(), new Stagnation(1000, true));
+                             abort.getTerminationCondition(), new ElapsedTime(Properties.elapsedTime));
     }
 
     private SwingBackgroundTask<MealyMachine> createTask() {
         return new SwingBackgroundTask<MealyMachine>() {
             @Override
             protected MealyMachine performTask() {
-                return evolve();
+                try {
+                    for (int i = 0; i < Properties.countOfLaunchs; ++i) {
+                        evolve();
+                        monitor.save("data_predicts_" + Properties.countOfUsedPredicts + "_" + i + ".png");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return new MealyMachine(1, 1);
+                //return evolve();
             }
 
             protected void postProcessing(MealyMachine machine) {
                 AntApplet.this.machine = machine;
                 renderer.setMachine(machine);
+                renderer.setField(fields[Integer.parseInt(fieldNumber.getText())]);
+
                 gameButton.setEnabled(true);
                 stepButton.setEnabled(true);
                 initButton.setEnabled(true);
 
                 renderer.reset();
-                if (new MealyMachineEvaluator(Properties.countOFfields, new Random()).getFitness(machine,
-                                                                                                 null) < Properties.targetFitness && abort.getControl().isEnabled()) {
-                    restartButton.setEnabled(false);
-                    initButton.setEnabled(false);
-                    abort.reset();
-                    createTask().execute();
-                } else {
-                    abort.getControl().setEnabled(false);
-                }
-
+                abort.getControl().setEnabled(false);
             }
         };
     }

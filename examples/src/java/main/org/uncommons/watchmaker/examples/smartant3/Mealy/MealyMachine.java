@@ -7,10 +7,8 @@ package org.uncommons.watchmaker.examples.smartant3.mealy;
  *     vans239@gmail.com
  */
 
-import org.uncommons.watchmaker.examples.smartant3.Properties;
 
 public class MealyMachine{
-    public static final int COUNTOFIMPACTS = Properties.COUNTOFIMPACTS;
     private int startState;
     private ShortcutMealyNode states[];
 
@@ -22,12 +20,8 @@ public class MealyMachine{
     public MealyMachine clone() {
         MealyMachine machine = new MealyMachine(this.getSize(), this.getStart());
         for (int i = 0; i < this.getSize(); ++i) {
-            machine.states[i] = new ShortcutMealyNode();
-            for (int j = 0; j < COUNTOFIMPACTS; ++j) {
-                ShortcutMealyNode node = this.getNode(i);
-                machine.states[i].setAction(j, node.getAction(j));
-                machine.states[i].setNextNode(j, node.getNextNode(j));
-            }
+            machine.states[i] = this.getNode(i).clone();
+
         }
         return machine;
     }

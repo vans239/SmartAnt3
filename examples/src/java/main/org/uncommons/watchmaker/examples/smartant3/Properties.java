@@ -15,11 +15,14 @@ public class Properties {
     public final static int countOFfields = 10;     // testing set for machine
 
     public final static int SIZE = 32;
-    public final static int COUNTOFIMPACTS = 256;
     public final static int STEPS = 200;
     public final static double mu = 0.11; //p(food in cell)
 
     public final static int muLambda = 5; //xz
     public final static double targetFitness = 100; //xz
-    public final static int countOfPredicts = 5;
+    public final static int countOfPredicts = 8;
+    public final static int countOfUsedPredicts = 1;
+
+    public final static int countOfLaunchs = 20;
+    public final static int elapsedTime = 30 * 60 * 1000;
 }

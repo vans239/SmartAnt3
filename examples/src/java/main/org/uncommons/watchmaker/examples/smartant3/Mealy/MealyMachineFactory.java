@@ -20,8 +20,6 @@ import java.util.Random;
  */
 
 public class MealyMachineFactory extends AbstractCandidateFactory<MealyMachine> {
-    public static final int COUNTOFIMPACTS = Properties.COUNTOFIMPACTS;
-
     private int numberOfStates;
 
 
@@ -33,8 +31,8 @@ public class MealyMachineFactory extends AbstractCandidateFactory<MealyMachine> 
         int start = rng.nextInt(numberOfStates);
         MealyMachine machine = new MealyMachine(numberOfStates, start);
         for (int i = 0; i < numberOfStates; ++i) {
-            ShortcutMealyNode node = new ShortcutMealyNode();
-            for(int j = 0; j < COUNTOFIMPACTS; ++j){
+            ShortcutMealyNode node = new ShortcutMealyNode(rng);
+            for(int j = 0; j < node.getCountOfImpacts(); ++j){
                 node.setAction(j, ShortcutMealyNode.Action.getRandomAction(rng));
                 node.setNextNode(j, rng.nextInt(numberOfStates));
             }
@@ -42,5 +40,13 @@ public class MealyMachineFactory extends AbstractCandidateFactory<MealyMachine> 
         }
         return machine;
     }
+/*
+    public  static void main(String argv[]){
+        Random random = new Random();
+        MealyMachineFactory mmf = new MealyMachineFactory(7);
+        MealyMachine machine = mmf.generateRandomCandidate(random);
+        System.out.println(machine.getNode(4).getPredictImpact(255));
+        System.out.println(machine.getNode(4).getPredictImpact(15));
+    }*/
 }
 

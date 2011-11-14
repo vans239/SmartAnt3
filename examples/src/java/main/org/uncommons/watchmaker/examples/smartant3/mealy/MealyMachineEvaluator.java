@@ -52,4 +52,8 @@ public class MealyMachineEvaluator implements FitnessEvaluator<MealyMachine> {
         }
         return field;
     }
+
+    public boolean[][][] getFields(){
+        return fields;
+    }
 }
