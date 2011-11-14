@@ -57,7 +57,7 @@ public class MealyMachineMutation implements EvolutionaryOperator<MealyMachine> 
      * @return A mutated version of the machine.
      */
     private MealyMachine mutateMachine(MealyMachine machine, Random rng) {
-        machine = new MealyMachine(machine);  // copying!!
+        machine = machine.clone();  // copying!!
         int mutated = 0;
         //realy mutated points can be less then mutationPoints
         while (mutated < mutationPoints) {
@@ -74,7 +74,7 @@ public class MealyMachineMutation implements EvolutionaryOperator<MealyMachine> 
             if(random > 0.5){
                 int i = rng.nextInt(machine.getSize());
                 int j = rng.nextInt(COUNTOFIMPACTS);
-                machine.getNode(i).setAction(j, MealyNode.Action.getRandomAction(rng));
+                machine.getNode(i).setAction(j, ShortcutMealyNode.Action.getRandomAction(rng));
             }
             ++mutated;
 

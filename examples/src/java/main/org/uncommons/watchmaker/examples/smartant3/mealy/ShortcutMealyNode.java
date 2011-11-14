@@ -11,7 +11,7 @@ import org.uncommons.watchmaker.examples.smartant3.Properties;
 
 import java.util.Random;
 
-public class MealyNode {
+public class ShortcutMealyNode{
     public static final int COUNTOFIMPACTS = Properties.COUNTOFIMPACTS;
 
     public static enum Action {
@@ -61,5 +61,4 @@ public class MealyNode {
     public Action getAction(int impact) {
         return actions[impact];
     }
-
 }

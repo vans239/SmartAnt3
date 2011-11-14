@@ -11,7 +11,7 @@ public class Properties {
     public final static double numberOfFilterCandidates = 0.2;
     public final static int countOfMutationPoints = 10;
     public final static int populationSize = 1;
-    public final static int countOfStates = 9;
+    public final static int countOfStates = 7;
     public final static int countOFfields = 10;     // testing set for machine
 
     public final static int SIZE = 32;
@@ -21,5 +21,5 @@ public class Properties {
 
     public final static int muLambda = 5; //xz
     public final static double targetFitness = 100; //xz
-
+    public final static int countOfPredicts = 5;
 }

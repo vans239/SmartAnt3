@@ -8,36 +8,35 @@ package org.uncommons.watchmaker.examples.smartant3.mealy;
  */
 
 import org.uncommons.watchmaker.examples.smartant3.Properties;
-import org.uncommons.watchmaker.examples.smartant3.mealy.MealyNode;
 
 public class MealyMachine{
     public static final int COUNTOFIMPACTS = Properties.COUNTOFIMPACTS;
     private int startState;
-    private MealyNode states[];
+    private ShortcutMealyNode states[];
 
     public MealyMachine(int states, int start) {
         this.startState = start;
-        this.states = new MealyNode[states];
+        this.states = new ShortcutMealyNode[states];
     }
 
-    public MealyMachine(MealyMachine machine) {
-        this.startState = machine.getStart();
-        states = new MealyNode[machine.getSize()];
-        for (int i = 0; i < machine.getSize(); ++i) {
-            states[i] = new MealyNode();
+    public MealyMachine clone() {
+        MealyMachine machine = new MealyMachine(this.getSize(), this.getStart());
+        for (int i = 0; i < this.getSize(); ++i) {
+            machine.states[i] = new ShortcutMealyNode();
             for (int j = 0; j < COUNTOFIMPACTS; ++j) {
-                MealyNode node = machine.getNode(i);
-                states[i].setAction(j, node.getAction(j));
-                states[i].setNextNode(j, node.getNextNode(j));
+                ShortcutMealyNode node = this.getNode(i);
+                machine.states[i].setAction(j, node.getAction(j));
+                machine.states[i].setNextNode(j, node.getNextNode(j));
             }
         }
+        return machine;
     }
 
-    public void addNode(int pos, MealyNode node) {
+    public void addNode(int pos, ShortcutMealyNode node) {
         states[pos] = node;
     }
 
-    public MealyNode getNode(int pos) {
+    public ShortcutMealyNode getNode(int pos) {
         return states[pos];
     }
 

@@ -33,9 +33,9 @@ public class MealyMachineFactory extends AbstractCandidateFactory<MealyMachine> 
         int start = rng.nextInt(numberOfStates);
         MealyMachine machine = new MealyMachine(numberOfStates, start);
         for (int i = 0; i < numberOfStates; ++i) {
-            MealyNode node = new MealyNode();
+            ShortcutMealyNode node = new ShortcutMealyNode();
             for(int j = 0; j < COUNTOFIMPACTS; ++j){
-                node.setAction(j, MealyNode.Action.getRandomAction(rng));
+                node.setAction(j, ShortcutMealyNode.Action.getRandomAction(rng));
                 node.setNextNode(j, rng.nextInt(numberOfStates));
             }
             machine.addNode(i, node);

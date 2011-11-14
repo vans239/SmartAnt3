@@ -124,9 +124,7 @@ public class AntESEngine extends EvolutionStrategyEngine<MealyMachine> {
                 double rate = getFitterCandidatesRate(evaluatedOffspring, evaluatedPopulation);
 
                 if (rate < fitterCandidates) {
-                    //evolutionScheme.setMutationPoints(rng.nextInt(numberOfMutationPoints));
                     evolutionScheme.setMutationPoints(rng.nextInt(numberOfMutationPoints));
-
                 } else {
                     i = 0;
                 }

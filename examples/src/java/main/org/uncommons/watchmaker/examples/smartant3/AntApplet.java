@@ -23,12 +23,14 @@ import org.uncommons.watchmaker.framework.EvolutionEngine;
 import org.uncommons.watchmaker.framework.termination.Stagnation;
 import org.uncommons.watchmaker.framework.termination.TargetFitness;
 import org.uncommons.watchmaker.swing.AbortControl;
+import org.uncommons.watchmaker.framework.*;
 
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -148,13 +150,17 @@ public class AntApplet extends AbstractExampleApplet {
     }
 
     public static MealyMachine evolve() {
+        System.out.println("Start: " + new Date());
         Random random = new Random();
         MealyMachineFactory factory = new MealyMachineFactory(Properties.countOfStates);
         MealyMachineMutation operators = new MealyMachineMutation();
         MealyMachineEvaluator mme = new MealyMachineEvaluator(Properties.countOFfields, random);
-        EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, mme, true, Properties.muLambda,
-                                                               step1, step2, Properties.numberOfFilterCandidates,
-                                                               Properties.countOfMutationPoints, random);
+        EvolutionEngine<MealyMachine> engine = new AntESEngine(factory, operators, mme, true,
+                                                                                         Properties.muLambda, step1,
+                                                                                         step2,
+                                                                                         Properties.numberOfFilterCandidates,
+                                                                                         Properties.countOfMutationPoints,
+                                                                                         random);
         engine.addEvolutionObserver(monitor);
         return engine.evolve(Properties.populationSize, 0, new TargetFitness(Properties.targetFitness, true),
                              abort.getTerminationCondition(), new Stagnation(1000, true));
@@ -164,8 +170,7 @@ public class AntApplet extends AbstractExampleApplet {
         return new SwingBackgroundTask<MealyMachine>() {
             @Override
             protected MealyMachine performTask() {
-                MealyMachine machine = evolve();
-                return machine;
+                return evolve();
             }
 
             protected void postProcessing(MealyMachine machine) {
@@ -177,7 +182,7 @@ public class AntApplet extends AbstractExampleApplet {
 
                 renderer.reset();
                 if (new MealyMachineEvaluator(Properties.countOFfields, new Random()).getFitness(machine,
-                                                           null) < Properties.targetFitness && abort.getControl().isEnabled()) {
+                                                                                                 null) < Properties.targetFitness && abort.getControl().isEnabled()) {
                     restartButton.setEnabled(false);
                     initButton.setEnabled(false);
                     abort.reset();

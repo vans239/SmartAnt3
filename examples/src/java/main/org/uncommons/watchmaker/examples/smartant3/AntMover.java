@@ -17,9 +17,7 @@ package org.uncommons.watchmaker.examples.smartant3;
 
 import org.uncommons.watchmaker.examples.smartant3.mealy.MealyImpact;
 import org.uncommons.watchmaker.examples.smartant3.mealy.MealyMachine;
-import org.uncommons.watchmaker.examples.smartant3.mealy.MealyNode.Action;
-
-import java.util.Random;
+import org.uncommons.watchmaker.examples.smartant3.mealy.ShortcutMealyNode.Action;
 
 /**
  * Moving algorithm for ant
